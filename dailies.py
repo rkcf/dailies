@@ -1,5 +1,5 @@
 # Dailies
-# A simple command line utilite for keeping track of daily tasks
+# A simple command line utility for keeping track of daily tasks.
 
 import sys 
 
