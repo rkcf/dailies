@@ -98,7 +98,17 @@ def complete_task(name):
 
 def print_help():
     """Prints list of commands with descriptions."""
-    print('help')
+
+    help_text = """Dailies
+A simple command line utility for keeping track of daily tasks.
+
+Commands:
+    help    Print this text.
+    add     Add a new daily.  Takes a task name argument.
+    rm      Permenantly remove a daily.  Takes a task name argument.
+    list    Display all dailies and their stats""" 
+
+    print(help_text)
 
 def save_data(list):
     """Writes list of dicts to file."""
