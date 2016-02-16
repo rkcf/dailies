@@ -7,7 +7,6 @@ import csv
 
 task_list = []
 data_path = os.environ['HOME'] + '/.dailies'
-# name, total, current_streak, max_streak, date_last_completed
 
 def load_data():
     """Loads csv task data into dicts, and places them in the master list"""
@@ -19,7 +18,7 @@ def load_data():
                 task_list.append(row)
     else:
         print('Datafile not found, creating one at $HOME/.dailies')
-        #TODO create base datafile
+        save_data([])
 
 # TODO Cleanup Streaks
 # Checks each tasks date_last_complete against current date, if it is two
@@ -95,20 +94,20 @@ def complete_task(name):
     for d in task_list:
         if d['name'] == name:
             d['total'] += 1
-    #TODO Implement tracking
+    #TODO Implement streak tracking
 
 def print_help():
     """Prints list of commands with descriptions."""
     print('help')
 
-def save_data():
-    """Writes task data to file."""
+def save_data(list):
+    """Writes list of dicts to file."""
     with open(data_path, 'w') as f:
         # name, total, current_streak, max_streak, date_last_completed
         fieldnames = ['name', 'total']       
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
-        for dict in task_list:
+        for dict in list:
             writer.writerow(dict) 
 
 def is_task(name):
@@ -121,6 +120,6 @@ def is_task(name):
 def main():
     load_data()
     parse_args()
-    save_data()
+    save_data(task_list)
 
 main()
