@@ -17,3 +17,7 @@ TODO
 * Implement completion dates
 * Implement streaking
 * Command for displaying only tasks still due
+
+License
+-------
+License under GPLv3

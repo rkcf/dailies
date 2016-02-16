@@ -1,5 +1,6 @@
 # Dailies
 # A simple command line utility for keeping track of daily tasks.
+# Copyright (C) 2016 Andrew Steinke
 
 import sys
 import os
@@ -19,10 +20,6 @@ def load_data():
     else:
         print('Datafile not found, creating one at $HOME/.dailies')
         save_data([])
-
-# TODO Cleanup Streaks
-# Checks each tasks date_last_complete against current date, if it is two
-# days previous, the current_streak is reset to 0.
 
 def parse_args():
     """Parses arguments from command line and invokes proper function"""
@@ -56,11 +53,9 @@ def parse_args():
 
 def list_all():
     """Prints a table with tasks and stats."""
-    print ('{0:5} | {1:5}'.format('Task', 'Total'))
+    print ('{0:10} | {1:10}'.format('Task', 'Total'))
     for task in task_list:
-        print ('{0:5} | {1:5}'.format(task['name'], task['total']))
-
-#TODO Today Command: Print each task that needs to be done yet today.
+        print ('{0:10} | {1:5}'.format(task['name'], task['total']))
 
 def add_task(name):
     """Adds new task to list."""
@@ -94,7 +89,6 @@ def complete_task(name):
     for d in task_list:
         if d['name'] == name:
             d['total'] += 1
-    #TODO Implement streak tracking
 
 def print_help():
     """Prints list of commands with descriptions."""
