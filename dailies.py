@@ -25,6 +25,11 @@ def parse_args():
             add_task(sys.argv[2])
         else:
             print('ERROR: add requires an argument!')
+    elif sys.argv[1] == 'rm':
+        if arg_cnt == 2:
+            remove_task(sys.argv[2])
+        else:
+            print('ERROR: rm requires an argument!')
     elif sys.argv[1] == 'list': 
         list_all()
     elif sys.argv[1] == 'help': 
@@ -37,7 +42,6 @@ def parse_args():
 # Print each daily task along with max completions and current streak to the
 # terminal. Orderd by current streak.
 def list_all():
-    
     print ('{0:5} | {1:5}'.format('Task', 'Total'))
     for task in task_list:
         print ('{0:5} | {1:5d}'.format(task['name'], task['times_completed']))
@@ -55,6 +59,19 @@ def add_task(name):
 
 # Remove Command
 # Prompts user to confirm, then removes task from list.
+def remove_task(task):
+    if task_list.count(task) == 1:
+        while True:
+            confirm = input('Are you sure you want to permenantly delete this task [y/n]?')
+            if confirm == 'y':
+                task_list.remove(task)
+                break
+            elif confirm == 'n':
+                break
+            else:
+                confirm = input('[y/n]?')
+    else:
+        print('ERROR: Task not found!')
 
 # Complete Command
 # Updates date_last_completed value of task to todays date.  Increments 
