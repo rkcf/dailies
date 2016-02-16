@@ -14,8 +14,6 @@ Journal    |     2
 
 TODO
 ----
-* Implement completion dates
-* Implement streaking
 * Command for displaying only tasks still due
 
 License

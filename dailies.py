@@ -17,6 +17,9 @@ def load_data():
             parser = csv.DictReader(f)
             for row in parser:
                 row['total'] = int(row['total'])
+                row['streak'] = int(row['streak'])
+                row['max_streak'] = int(row['max_streak'])
+                row['date_completed'] = int(row['date_completed'])
                 task_list.append(row)
     else:
         print('Datafile not found, creating one at $HOME/.dailies')
@@ -64,7 +67,7 @@ def add_task(name):
             'total': 0,
             'streak': 0,
             'max_streak': 0,
-            'date_completed': ''
+            'date_completed': 0
            }
     if is_task(name):
         print('ERROR: Task is already in list!')
@@ -89,12 +92,16 @@ def remove_task(task):
         print('ERROR: Task not found!')
 
 def complete_task(name):
-    """Adds one to the task's total"""
+    """Adds one to the task's total, checks if a streak is occuring"""
     for d in task_list:
         if d['name'] == name:
             d['total'] += 1
-            d['date_completed'] = datetime.date.today().isoformat()
-        #TODO Streak stuff
+            today_ord = datetime.date.today()
+            if  today_ord - d['date_completed'] == 1:
+                d['streak'] +=1
+                if d['streak'] > d['max_streak']:
+                    d['max_streak'] = d['streak']
+            d['date_completed'] = today_ord
 
 def print_help():
     """Prints list of commands with descriptions."""
