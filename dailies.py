@@ -15,6 +15,7 @@ def load_data():
         with open(data_path, 'r') as f:
             parser = csv.DictReader(f)
             for row in parser:
+                row['total'] = int(row['total'])
                 task_list.append(row)
     else:
         print('Datafile not found, creating one at $HOME/.dailies')
@@ -36,6 +37,11 @@ def parse_args():
             add_task(sys.argv[2])
         else:
             print('ERROR: add requires an argument!')
+    elif sys.argv[1] == 'complete': 
+        if arg_cnt == 2:
+            complete_task(sys.argv[2])
+        else:
+            print('ERROR: complete requires an argument!')
     elif sys.argv[1] == 'rm':
         if arg_cnt == 2:
             remove_task(sys.argv[2])
@@ -84,9 +90,12 @@ def remove_task(task):
     else:
         print('ERROR: Task not found!')
 
-#TODO Complete Command: Updates date_last_completed value of task to todays
-# date.  Increments total.  Adds one to current_streak, and updates
-# max_streak as needed.
+def complete_task(name):
+    """Adds one to the task's total"""
+    for d in task_list:
+        if d['name'] == name:
+            d['total'] += 1
+    #TODO Implement tracking
 
 def print_help():
     """Prints list of commands with descriptions."""
