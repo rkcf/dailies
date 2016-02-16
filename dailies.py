@@ -2,17 +2,23 @@
 # A simple command line utility for keeping track of daily tasks.
 
 import sys
-import os.path
+import os
+import csv
 
 task_list = []
-
-# TODO Load Data
-def load_data():
-    if os.path.isfile($HOME/.dailies) print ('is file')
-# Check for data file in $HOME/.dailies.
-# Create one if it does not exits.
-# Load data to python data structures.
 # name, times_completed, current_streak, max_streak, date_last_completed
+
+def load_data():
+    """Loads csv task data into dicts, and places them in the master list"""
+    data_path = os.environ['HOME'] + '/.dailies'
+    if os.path.isfile(data_path):
+        with open(data_path, 'r') as f:
+            parser = csv.DictReader(f)
+            for row in parser:
+                task_list.append(row)
+    else:
+        print('Datafile not found, creating one at $HOME/.dailies')
+        #TODO create base datafile
 
 # TODO Cleanup Streaks
 # Checks each tasks date_last_complete against current date, if it is two
@@ -86,6 +92,7 @@ def print_help():
 #TODO Save changes to file
 
 def main():
+    load_data()
     parse_args()
 
 main()
