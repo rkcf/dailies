@@ -20,4 +20,4 @@ TODO
 
 License
 -------
-License under GPLv3
+Licensed under GPLv3

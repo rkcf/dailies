@@ -100,6 +100,7 @@ Commands:
     help    Print this text.
     add     Add a new daily.  Takes a task name argument.
     rm      Permenantly remove a daily.  Takes a task name argument.
+    complete Mark a task complete.  Takes a task name argument.
     list    Display all dailies and their stats""" 
 
     print(help_text)
