@@ -35,8 +35,7 @@ def clean_streaks():
 def parse_args():
     """Parses arguments from command line and invokes proper function."""
     arg_cnt = len(sys.argv) - 1
-    if arg_cnt < 1 and arg_cnt > 2: 
-        print(arg_cnt)
+    if arg_cnt < 1 or arg_cnt > 2: 
         print('ERROR: Incorrect number of arguments!')
         print_help()
     elif sys.argv[1] == 'add': 
