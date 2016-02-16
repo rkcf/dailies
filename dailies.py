@@ -1,11 +1,14 @@
 # Dailies
 # A simple command line utility for keeping track of daily tasks.
 
-import sys 
+import sys
+import os.path
 
 task_list = []
 
 # TODO Load Data
+def load_data():
+    if os.path.isfile($HOME/.dailies) print ('is file')
 # Check for data file in $HOME/.dailies.
 # Create one if it does not exits.
 # Load data to python data structures.
