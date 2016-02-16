@@ -25,6 +25,13 @@ def load_data():
         print('Datafile not found, creating one at $HOME/.dailies')
         save_data([])
 
+def clean_streaks():
+    today_ord = datetime.date.today().toordinal()
+    for task in task_list:
+        if today_ord - task['date_completed'] > 1:
+            task['streak'] = 0
+
+
 def parse_args():
     """Parses arguments from command line and invokes proper function"""
     arg_cnt = len(sys.argv) - 1
@@ -96,7 +103,7 @@ def complete_task(name):
     for d in task_list:
         if d['name'] == name:
             d['total'] += 1
-            today_ord = datetime.date.today()
+            today_ord = datetime.date.today().toordinal()
             if  today_ord - d['date_completed'] == 1:
                 d['streak'] +=1
                 if d['streak'] > d['max_streak']:
@@ -136,6 +143,7 @@ def is_task(name):
 
 def main():
     load_data()
+    clean_streaks()
     parse_args()
     save_data(task_list)
 
