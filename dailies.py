@@ -5,6 +5,7 @@
 import sys
 import os
 import csv
+import datetime
 
 task_list = []
 data_path = os.environ['HOME'] + '/.dailies'
@@ -53,14 +54,17 @@ def parse_args():
 
 def list_all():
     """Prints a table with tasks and stats."""
-    print ('{0:10} | {1:10}'.format('Task', 'Total'))
+    print ('{0:10} | {1:5} | {2:6} | {3:5}'.format('Task', 'Total', 'Streak', 'Max Streak'))
     for task in task_list:
-        print ('{0:10} | {1:5}'.format(task['name'], task['total']))
+        print ('{0:10} | {1:5} | {2:6} | {3:5}'.format(task['name'], task['total'], task['streak'], task['max_streak']))
 
 def add_task(name):
     """Adds new task to list."""
     task = {'name': name,
             'total': 0,
+            'streak': 0,
+            'max_streak': 0,
+            'date_completed': ''
            }
     if is_task(name):
         print('ERROR: Task is already in list!')
@@ -89,6 +93,8 @@ def complete_task(name):
     for d in task_list:
         if d['name'] == name:
             d['total'] += 1
+            d['date_completed'] = datetime.date.today().isoformat()
+        #TODO Streak stuff
 
 def print_help():
     """Prints list of commands with descriptions."""
@@ -108,8 +114,7 @@ Commands:
 def save_data(list):
     """Writes list of dicts to file."""
     with open(data_path, 'w') as f:
-        # name, total, current_streak, max_streak, date_last_completed
-        fieldnames = ['name', 'total']       
+        fieldnames = ['name', 'total', 'streak', 'max_streak', 'date_completed']       
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         for dict in list:
