@@ -73,7 +73,9 @@ def remove_task(task):
         while True:
             confirm = input('Are you sure you want to permenantly delete this task [y/n]?')
             if confirm == 'y':
-                task_list.remove(task)
+                for d in task_list:
+                    if d['name'] == task:
+                        task_list.remove(d)
                 break
             elif confirm == 'n':
                 break
