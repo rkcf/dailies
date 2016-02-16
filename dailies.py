@@ -62,11 +62,14 @@ def add_task(name):
     task = {'name': name,
             'total': 0,
            }
-    task_list.append(task)
+    if is_task(name):
+        print('ERROR: Task is already in list!')
+    else:
+        task_list.append(task)
 
 def remove_task(task):
     """Removes task from list."""
-    if task_list.count(task) == 1:
+    if is_task:
         while True:
             confirm = input('Are you sure you want to permenantly delete this task [y/n]?')
             if confirm == 'y':
@@ -79,7 +82,6 @@ def remove_task(task):
     else:
         print('ERROR: Task not found!')
 
-
 #TODO Complete Command: Updates date_last_completed value of task to todays
 # date.  Increments total.  Adds one to current_streak, and updates
 # max_streak as needed.
@@ -89,7 +91,7 @@ def print_help():
     print('help')
 
 def save_data():
-    """Writes task data to file"""
+    """Writes task data to file."""
     with open(data_path, 'w') as f:
         # name, total, current_streak, max_streak, date_last_completed
         fieldnames = ['name', 'total']       
@@ -97,6 +99,13 @@ def save_data():
         writer.writeheader()
         for dict in task_list:
             writer.writerow(dict) 
+
+def is_task(name):
+    """Given a task name check if the task dict is in the list."""
+    for d in task_list:
+        if d['name'] == name:
+            return True
+    return False
 
 def main():
     load_data()
