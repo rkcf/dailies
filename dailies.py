@@ -11,7 +11,7 @@ task_list = []
 data_path = os.environ['HOME'] + '/.dailies'
 
 def load_data():
-    """Loads csv task data into dicts, and places them in the master list"""
+    """Loads csv task data into dicts, and places them in the master list."""
     if os.path.isfile(data_path):
         with open(data_path, 'r') as f:
             parser = csv.DictReader(f)
@@ -26,14 +26,14 @@ def load_data():
         save_data([])
 
 def clean_streaks():
+    """Checks whether any streaks are stale, and resets counter to 0 if so."""
     today_ord = datetime.date.today().toordinal()
     for task in task_list:
         if today_ord - task['date_completed'] > 1:
             task['streak'] = 0
 
-
 def parse_args():
-    """Parses arguments from command line and invokes proper function"""
+    """Parses arguments from command line and invokes proper function."""
     arg_cnt = len(sys.argv) - 1
     if arg_cnt < 1 and arg_cnt > 2: 
         print(arg_cnt)
@@ -99,15 +99,15 @@ def remove_task(task):
         print('ERROR: Task not found!')
 
 def complete_task(name):
-    """Adds one to the task's total, checks if a streak is occuring"""
+    """Adds one to the task's total, checks if a streak is occuring."""
     for d in task_list:
         if d['name'] == name:
             d['total'] += 1
             today_ord = datetime.date.today().toordinal()
-            if  today_ord - d['date_completed'] == 1:
+            if d['date_completed'] != today_ord:
                 d['streak'] +=1
-                if d['streak'] > d['max_streak']:
-                    d['max_streak'] = d['streak']
+            if d['streak'] > d['max_streak']:
+                d['max_streak'] = d['streak']
             d['date_completed'] = today_ord
 
 def print_help():
