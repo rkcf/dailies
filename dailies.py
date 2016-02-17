@@ -61,6 +61,8 @@ def parse_args(list):
             print('ERROR: rm requires an argument!')
     elif sys.argv[1] == 'list':
         list_all(list)
+    elif sys.argv[1] == 'today':
+        list_today(list)
     elif sys.argv[1] == 'help':
         print_help()
     else:
@@ -73,6 +75,13 @@ def list_all(list):
     print('{0:10} | {1:5} | {2:6} | {3:5}'.format('Task', 'Total', 'Streak', 'Max Streak'))
     for d in list:
         print('{0:10} | {1:5} | {2:6} | {3:5}'.format(d['name'], d['total'], d['streak'], d['max_streak']))
+
+def list_today(list):
+    """Prints a list of all tasks still due today"""
+    print('TODO\n')
+    for d in list:
+        if d['date_completed'] == TODAY_ORD - 1:
+            print(d['name'])
 
 def add_task(name, list):
     """Adds new task to list."""
@@ -99,6 +108,7 @@ def remove_task(name, list):
                         list.remove(d)
                 break
             elif confirm == 'n':
+                #TODO rm n test fails
                 break
             else:
                 confirm = input('[y/n]?')
@@ -127,7 +137,8 @@ Commands:
     add     Add a new daily.  Takes a task name argument.
     rm      Permenantly remove a daily.  Takes a task name argument.
     complete Mark a task complete.  Takes a task name argument.
-    list    Display all dailies and their stats"""
+    list    Display all dailies and their stats.
+    today   Display all tasks due yet today."""
 
     print(help_text)
 
