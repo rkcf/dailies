@@ -7,12 +7,12 @@ import os
 import csv
 import datetime
 
-task_list = []
 data_path = os.environ['HOME'] + '/.dailies'
 
 def load_data():
     """Loads csv task data into dicts, and places them in the master list."""
     if os.path.isfile(data_path):
+        task_list = []
         with open(data_path, 'r') as f:
             parser = csv.DictReader(f)
             for row in parser:
@@ -21,18 +21,20 @@ def load_data():
                 row['max_streak'] = int(row['max_streak'])
                 row['date_completed'] = int(row['date_completed'])
                 task_list.append(row)
+        return(task_list)
     else:
         print('Datafile not found, creating one at $HOME/.dailies')
         save_data([])
+        return([])
 
-def clean_streaks():
+def clean_streaks(list):
     """Checks whether any streaks are stale, and resets counter to 0 if so."""
     today_ord = datetime.date.today().toordinal()
-    for task in task_list:
-        if today_ord - task['date_completed'] > 1:
-            task['streak'] = 0
+    for d in list:
+        if today_ord - d['date_completed'] > 1:
+            d['streak'] = 0
 
-def parse_args():
+def parse_args(list):
     """Parses arguments from command line and invokes proper function."""
     arg_cnt = len(sys.argv) - 1
     if arg_cnt < 1 or arg_cnt > 2: 
@@ -40,34 +42,35 @@ def parse_args():
         print_help()
     elif sys.argv[1] == 'add': 
         if arg_cnt == 2:
-            add_task(sys.argv[2])
+            add_task(sys.argv[2], list)
         else:
             print('ERROR: add requires an argument!')
     elif sys.argv[1] == 'complete': 
         if arg_cnt == 2:
-            complete_task(sys.argv[2])
+            complete_task(sys.argv[2], list)
         else:
             print('ERROR: complete requires an argument!')
     elif sys.argv[1] == 'rm':
         if arg_cnt == 2:
-            remove_task(sys.argv[2])
+            remove_task(sys.argv[2], list)
         else:
             print('ERROR: rm requires an argument!')
     elif sys.argv[1] == 'list': 
-        list_all()
+        list_all(list)
     elif sys.argv[1] == 'help': 
         print_help()
     else:
         print('ERROR: Invalid command!')
         print_help()
 
-def list_all():
+def list_all(list):
     """Prints a table with tasks and stats."""
     print ('{0:10} | {1:5} | {2:6} | {3:5}'.format('Task', 'Total', 'Streak', 'Max Streak'))
-    for task in task_list:
-        print ('{0:10} | {1:5} | {2:6} | {3:5}'.format(task['name'], task['total'], task['streak'], task['max_streak']))
+    for d in list:
+        print ('{0:10} | {1:5} | {2:6} | {3:5}'.format(d['name'], d['total'], d['streak'], d['max_streak']))
 
-def add_task(name):
+
+def add_task(name, list):
     """Adds new task to list."""
     task = {'name': name,
             'total': 0,
@@ -75,20 +78,20 @@ def add_task(name):
             'max_streak': 0,
             'date_completed': 0
            }
-    if is_task(name):
+    if dict_in_list(name, list):
         print('ERROR: Task is already in list!')
     else:
-        task_list.append(task)
+        list.append(task)
 
-def remove_task(task):
+def remove_task(name, list):
     """Removes task from list."""
-    if is_task:
+    if dict_in_list(name, list):
         while True:
             confirm = input('Are you sure you want to permenantly delete this task [y/n]?')
             if confirm == 'y':
-                for d in task_list:
-                    if d['name'] == task:
-                        task_list.remove(d)
+                for d in list:
+                    if d['name'] == name:
+                        list.remove(d)
                 break
             elif confirm == 'n':
                 break
@@ -97,9 +100,9 @@ def remove_task(task):
     else:
         print('ERROR: Task not found!')
 
-def complete_task(name):
+def complete_task(name, list):
     """Adds one to the task's total, checks if a streak is occuring."""
-    for d in task_list:
+    for d in list:
         if d['name'] == name:
             d['total'] += 1
             today_ord = datetime.date.today().toordinal()
@@ -130,20 +133,20 @@ def save_data(list):
         fieldnames = ['name', 'total', 'streak', 'max_streak', 'date_completed']       
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
-        for dict in list:
-            writer.writerow(dict) 
+        for d in list:
+            writer.writerow(d) 
 
-def is_task(name):
-    """Given a task name check if the task dict is in the list."""
-    for d in task_list:
+def dict_in_list(name, list):
+    """Check if the dict is in the list."""
+    for d in list:
         if d['name'] == name:
             return True
     return False
 
 def main():
-    load_data()
-    clean_streaks()
-    parse_args()
+    task_list = load_data()
+    clean_streaks(task_list)
+    parse_args(task_list)
     save_data(task_list)
 
 main()
