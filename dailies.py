@@ -11,7 +11,7 @@ DATA_PATH = os.environ['HOME'] + '/.dailies'
 TODAY_ORD = datetime.date.today().toordinal()
 
 def load_data():
-    """Loads csv task data into dicts, and places them in the master list."""
+    """Loads csv task data into dicts, and places them in a list."""
     if os.path.isfile(DATA_PATH):
         task_list = []
         with open(DATA_PATH, 'r') as f:
@@ -29,12 +29,12 @@ def load_data():
         save_data([])
         return []
 
-
 def clean_streaks(list):
     """Checks whether any streaks are stale, and resets counter to 0 if so."""
     for d in list:
         if TODAY_ORD - d['date_completed'] > 1:
             d['streak'] = 0
+    return list
 
 def parse_args(list):
     """Parses arguments from command line and invokes proper function."""
@@ -44,17 +44,19 @@ def parse_args(list):
         print_help()
     elif sys.argv[1] == 'add':
         if arg_cnt == 2:
-            add_task(sys.argv[2], list)
+            return add_task(sys.argv[2], list)
         else:
             print('ERROR: add requires an argument!')
     elif sys.argv[1] == 'complete':
         if arg_cnt == 2:
-            complete_task(sys.argv[2], list)
+            for d in list:
+                if d['name'] == sys.argv[2]:
+                    d = complete_task(d)
         else:
             print('ERROR: complete requires an argument!')
     elif sys.argv[1] == 'rm':
         if arg_cnt == 2:
-            remove_task(sys.argv[2], list)
+            return remove_task(sys.argv[2], list)
         else:
             print('ERROR: rm requires an argument!')
     elif sys.argv[1] == 'list':
@@ -64,14 +66,13 @@ def parse_args(list):
     else:
         print('ERROR: Invalid command!')
         print_help()
-
+    return list
 
 def list_all(list):
     """Prints a table with tasks and stats."""
     print('{0:10} | {1:5} | {2:6} | {3:5}'.format('Task', 'Total', 'Streak', 'Max Streak'))
     for d in list:
         print('{0:10} | {1:5} | {2:6} | {3:5}'.format(d['name'], d['total'], d['streak'], d['max_streak']))
-
 
 def add_task(name, list):
     """Adds new task to list."""
@@ -85,6 +86,7 @@ def add_task(name, list):
         print('ERROR: Task is already in list!')
     else:
         list.append(task)
+    return list
 
 def remove_task(name, list):
     """Removes task from list."""
@@ -102,17 +104,17 @@ def remove_task(name, list):
                 confirm = input('[y/n]?')
     else:
         print('ERROR: Task not found!')
+    return list
 
-def complete_task(name, list):
+def complete_task(task):
     """Adds one to the task's total, checks if a streak is occuring."""
-    for d in list:
-        if d['name'] == name:
-            d['total'] += 1
-            if d['date_completed'] != TODAY_ORD:
-                d['streak'] += 1
-            if d['streak'] > d['max_streak']:
-                d['max_streak'] = d['streak']
-            d['date_completed'] = TODAY_ORD
+    task['total'] += 1
+    if task['date_completed'] != TODAY_ORD:
+        task['streak'] += 1
+    if task['streak'] > task['max_streak']:
+        task['max_streak'] = task['streak']
+    task['date_completed'] = TODAY_ORD
+    return task
 
 def print_help():
     """Prints list of commands with descriptions."""
@@ -148,9 +150,8 @@ def dict_in_list(name, list):
 def main():
     """Main body of dailies cli"""
     task_list = load_data()
-    clean_streaks(task_list)
-    parse_args(task_list)
+    task_list = clean_streaks(task_list)
+    task_list = parse_args(task_list)
     save_data(task_list)
-
 
 main()
